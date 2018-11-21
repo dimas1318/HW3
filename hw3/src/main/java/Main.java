@@ -1,5 +1,10 @@
 import counters.*;
 
+/**
+ * This class is used only for debugging of counter realizations.<br>
+ * I've marked it as {@link Deprecated} because realizations are done and a benchmark is done too.
+ */
+@Deprecated
 public class Main {
 
     public static void main(String[] args) {
