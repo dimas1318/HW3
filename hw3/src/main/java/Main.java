@@ -12,7 +12,9 @@ public class Main {
 //        Counter counter = new SynchronizedCounter();
 //        Counter counter = new ReentrantLockCounter();
 //        Counter counter = new AtomicLongCounter();
-        Counter counter = new VolatileCounter();
+//        Counter counter = new VolatileCounter();
+//        Counter counter = new SemaphoreCounter();
+        Counter counter = new StampedLockCounter();
 
         Thread thread1 = new Thread(() -> {
             long number;

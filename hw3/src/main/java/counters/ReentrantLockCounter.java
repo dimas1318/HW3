@@ -2,17 +2,31 @@ package counters;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * {@link Counter} realization via {@link ReentrantLock}.
+ */
 public class ReentrantLockCounter implements Counter {
 
+    /**
+     * Counter value.
+     */
     private long mCounter;
 
-    private ReentrantLock mLock = new ReentrantLock(true);
+    /**
+     * Lock.
+     */
+    private final ReentrantLock mLock = new ReentrantLock(true);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getNumber() {
         mLock.lock();
-        long number = mCounter++;
-        mLock.unlock();
-        return number;
+        try {
+            return mCounter++;
+        } finally {
+            mLock.unlock();
+        }
     }
 }

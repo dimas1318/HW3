@@ -8,16 +8,33 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import static java.lang.Thread.sleep;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openjdk.jmh.annotations.Mode.Throughput;
 
+/**
+ * Benchmark tests of {@link Counter} realizations.
+ */
 public class Test {
 
+    /**
+     * Number of threads.
+     */
     private static final int THREAD_COUNT = 8;
-//    private static final long THREAD_TIME_MS = 2;
-    private static final int WARMUP_ITERATIONS = 1;
-    private static final int MEASUREMENT_ITERATION = 5;
+
+    /**
+     * Time of thread sleep (in milliseconds).
+     */
+    private static final long THREAD_SLEEP_TIME_MS = 2;
+
+    /**
+     * Number of warmup iterations.
+     */
+    private static final int WARMUP_ITERATIONS = 20;
+
+    /**
+     * Number of measurement iterations.
+     */
+    private static final int MEASUREMENT_ITERATION = 80;
 
     @State(Scope.Benchmark)
     public static class CounterState {
@@ -25,6 +42,8 @@ public class Test {
         Counter reentrantLockCounter = new ReentrantLockCounter();
         Counter atomicLongCounter = new AtomicLongCounter();
         Counter volatileCounter = new VolatileCounter();
+        Counter semaphoreCounter = new SemaphoreCounter();
+        Counter stampedLockCounter = new StampedLockCounter();
     }
 
     @Benchmark
@@ -33,7 +52,7 @@ public class Test {
     @Group("SynchronizedCounter")
     public void testSynchronizedCounter(CounterState state) {
         state.synchronizedCounter.getNumber();
-        threadSleep();
+        sleep();
     }
 
     @Benchmark
@@ -42,7 +61,7 @@ public class Test {
     @Group("ReentrantLockCounter")
     public void testReentrantLockCounter(CounterState state) {
         state.reentrantLockCounter.getNumber();
-        threadSleep();
+        sleep();
     }
 
     @Benchmark
@@ -51,7 +70,7 @@ public class Test {
     @Group("AtomicLongCounter")
     public void testAtomicLongCounter(CounterState state) {
         state.atomicLongCounter.getNumber();
-        threadSleep();
+        sleep();
     }
 
     @Benchmark
@@ -60,7 +79,25 @@ public class Test {
     @Group("VolatileCounter")
     public void testVolatileCounter(CounterState state) {
         state.volatileCounter.getNumber();
-        threadSleep();
+        sleep();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Throughput)
+    @OutputTimeUnit(SECONDS)
+    @Group("SemaphoreCounter")
+    public void testSemaphoreCounter(CounterState state) {
+        state.semaphoreCounter.getNumber();
+        sleep();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Throughput)
+    @OutputTimeUnit(SECONDS)
+    @Group("StampedLockCounter")
+    public void testStampedLockCounter(CounterState state) {
+        state.stampedLockCounter.getNumber();
+        sleep();
     }
 
     public static void main(String[] args) throws RunnerException {
@@ -76,10 +113,13 @@ public class Test {
         new Runner(options).run();
     }
 
-    private void threadSleep() {
-//        try {
-//            sleep(Test.THREAD_TIME_MS);
-//        } catch (InterruptedException ignored) {
-//        }
+    /**
+     * Sleep for {@code THREAD_SLEEP_TIME_MS} milliseconds.
+     */
+    private void sleep() {
+        try {
+            Thread.sleep(Test.THREAD_SLEEP_TIME_MS);
+        } catch (InterruptedException ignored) {
+        }
     }
 }
