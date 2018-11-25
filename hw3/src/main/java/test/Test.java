@@ -20,7 +20,7 @@ public class Test {
     /**
      * Number of threads.
      */
-    private static final int THREAD_COUNT = 1;
+    private static final int THREAD_COUNT = 8;
 
     /**
      * Time of thread sleep (in milliseconds).
