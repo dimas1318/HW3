@@ -15,6 +15,8 @@ public class VolatileCounter implements Counter {
      */
     @Override
     public long getNumber() {
-        return mCounter++;
+        synchronized (this) {
+            return mCounter++;
+        }
     }
 }
